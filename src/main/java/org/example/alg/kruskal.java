@@ -1,4 +1,4 @@
-package org.example;
+package org.example.alg;
 
 public class kruskal {
 }

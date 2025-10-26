@@ -1,3 +1,5 @@
+package org.example.alg;
+
 import java.util.*;
 
 class Edge {
