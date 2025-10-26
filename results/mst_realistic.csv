@@ -1,0 +1,7 @@
+﻿Dataset,Vertices,Edges,Kruskal Time (ms),Prim Time (ms),Theo Kruskal,Theo Prim,Theo Prim Matrix
+small,4,4,0,0,0.0,0.0,0.0
+small,5,6,0,0,0.0,0.0,0.0
+small,5,3,0,0,0.0,0.0,0.0
+medium,10,12,0,0,0.0,0.0,0.0
+medium,12,21,0,0,0.0,0.0,0.0
+large,30,60,0,0,0.0,0.0,0.0
