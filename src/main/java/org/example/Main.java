@@ -21,5 +21,23 @@ public class Main {
             System.out.println("Comparisons: " + result.comparisons + ", Unions: " + result.unions);
             System.out.println("Time: " + result.timeMs + " ms");
         }
+
+
+
+        PrimAlgorithm prim = new PrimAlgorithm();
+
+        for (Graph g : graphs) {
+            System.out.println("\n--- GRAPH ---");
+            System.out.println("Vertices: " + g.vertexCount() + ", Edges: " + g.edgeCount());
+
+            KruskalAlgorithm.Result kr = kruskal.run(g);
+            PrimAlgorithm.Result pr = prim.run(g);
+
+            System.out.println("Kruskal MST weight: " + kr.totalWeight + " | time: " + kr.timeMs + " ms");
+            System.out.println("Prim MST weight: " + pr.totalWeight + " | time: " + pr.timeMs + " ms");
+            System.out.println("Kruskal edges: " + kr.mstEdges);
+            System.out.println("Prim edges: " + pr.mstEdges);
+        }
+
     }
 }
