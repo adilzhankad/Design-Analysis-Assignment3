@@ -8,36 +8,53 @@ import java.util.*;
 public class Main {
     public static void main(String[] args) throws Exception {
 
-        List<Graph> graphs = InputLoader.loadGraphs("src/main/resources/datasets/small.json");
+        // список всех датасетов
+        String[] inputFiles = {
+                "src/main/resources/datasets/small.json",
+                "src/main/resources/datasets/medium.json",
+                "src/main/resources/datasets/large.json"
+        };
+
+        // папка для результатов
+        String resultsFolder = "results";
+
         KruskalAlgorithm kruskal = new KruskalAlgorithm();
-
-        for (Graph g : graphs) {
-            KruskalAlgorithm.Result result = kruskal.run(g);
-
-            System.out.println("\nGraph:");
-            System.out.println("Vertices: " + g.vertexCount() + ", Edges: " + g.edgeCount());
-            System.out.println("MST weight = " + result.totalWeight);
-            System.out.println("Edges in MST: " + result.mstEdges);
-            System.out.println("Comparisons: " + result.comparisons + ", Unions: " + result.unions);
-            System.out.println("Time: " + result.timeMs + " ms");
-        }
-
-
-
         PrimAlgorithm prim = new PrimAlgorithm();
 
-        for (Graph g : graphs) {
-            System.out.println("\n--- GRAPH ---");
-            System.out.println("Vertices: " + g.vertexCount() + ", Edges: " + g.edgeCount());
+        for (String inputPath : inputFiles) {
+            // определяем имя датасета (small / medium / large)
+            String datasetName = inputPath.substring(inputPath.lastIndexOf("/") + 1).replace(".json", "");
+            String outputPath = resultsFolder + "/output_" + datasetName + ".json";
 
-            KruskalAlgorithm.Result kr = kruskal.run(g);
-            PrimAlgorithm.Result pr = prim.run(g);
+            System.out.println("\n===============================");
+            System.out.println("Processing dataset: " + datasetName);
+            System.out.println("===============================");
 
-            System.out.println("Kruskal MST weight: " + kr.totalWeight + " | time: " + kr.timeMs + " ms");
-            System.out.println("Prim MST weight: " + pr.totalWeight + " | time: " + pr.timeMs + " ms");
-            System.out.println("Kruskal edges: " + kr.mstEdges);
-            System.out.println("Prim edges: " + pr.mstEdges);
+            List<Graph> graphs = InputLoader.loadGraphs(inputPath);
+
+            Map<String, KruskalAlgorithm.Result> krResults = new HashMap<>();
+            Map<String, PrimAlgorithm.Result> prResults = new HashMap<>();
+
+            for (Graph g : graphs) {
+                String graphName = "Graph_" + g.vertexCount() + "_" + g.edgeCount();
+
+                System.out.println("\n--- " + graphName + " ---");
+                System.out.println("Vertices: " + g.vertexCount() + ", Edges: " + g.edgeCount());
+
+                KruskalAlgorithm.Result kr = kruskal.run(g);
+                PrimAlgorithm.Result pr = prim.run(g);
+
+                System.out.println("Kruskal → weight: " + kr.totalWeight + " | time: " + kr.timeMs + " ms");
+                System.out.println("Prim → weight: " + pr.totalWeight + " | time: " + pr.timeMs + " ms");
+
+                krResults.put(graphName, kr);
+                prResults.put(graphName, pr);
+            }
+
+            // записываем результаты в JSON
+            OutputWriter.writeResults(graphs, krResults, prResults, outputPath);
         }
 
+        System.out.println("\n All datasets processed successfully!");
     }
 }

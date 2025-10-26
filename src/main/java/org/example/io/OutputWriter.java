@@ -11,7 +11,6 @@ import java.util.*;
 
 public class OutputWriter {
 
-    // Метод для записи результатов в JSON
     public static void writeResults(
             List<Graph> graphs,
             Map<String, KruskalAlgorithm.Result> kruskalResults,
@@ -22,36 +21,37 @@ public class OutputWriter {
         List<Map<String, Object>> outputList = new ArrayList<>();
 
         for (Graph g : graphs) {
-            String graphName = g.getVertices().toString(); // простое имя
+            String graphName = "Graph_" + g.vertexCount() + "_" + g.edgeCount();
+
+            Map<String, Object> record = new LinkedHashMap<>();
+            record.put("graph", graphName);
+            record.put("vertexCount", g.vertexCount());
+            record.put("edgeCount", g.edgeCount());
+
             KruskalAlgorithm.Result kr = kruskalResults.get(graphName);
             PrimAlgorithm.Result pr = primResults.get(graphName);
-
-            Map<String, Object> result = new LinkedHashMap<>();
-            result.put("graph", graphName);
-            result.put("vertexCount", g.vertexCount());
-            result.put("edgeCount", g.edgeCount());
 
             if (kr != null) {
                 Map<String, Object> k = new LinkedHashMap<>();
                 k.put("totalWeight", kr.totalWeight);
                 k.put("edges", kr.mstEdges);
+                k.put("timeMs", kr.timeMs);
                 k.put("comparisons", kr.comparisons);
                 k.put("unions", kr.unions);
-                k.put("timeMs", kr.timeMs);
-                result.put("kruskal", k);
+                record.put("kruskal", k);
             }
 
             if (pr != null) {
                 Map<String, Object> p = new LinkedHashMap<>();
                 p.put("totalWeight", pr.totalWeight);
                 p.put("edges", pr.mstEdges);
+                p.put("timeMs", pr.timeMs);
                 p.put("comparisons", pr.comparisons);
                 p.put("heapOps", pr.heapOps);
-                p.put("timeMs", pr.timeMs);
-                result.put("prim", p);
+                record.put("prim", p);
             }
 
-            outputList.add(result);
+            outputList.add(record);
         }
 
         ObjectWriter writer = new ObjectMapper().writerWithDefaultPrettyPrinter();
